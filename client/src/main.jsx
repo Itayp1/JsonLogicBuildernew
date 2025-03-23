@@ -52,7 +52,7 @@ const theme = createTheme({
   },
 });
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById("root")).render(
   <DndProvider backend={HTML5Backend}>
     <ThemeProvider theme={theme}>
       <CssBaseline />
