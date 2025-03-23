@@ -107,10 +107,12 @@ export function useJsonLogicBuilder() {
       icon: operation.icon,
       children: [],
       get jsonLogic() {
-        if (!this.children.length) return { [operation.jsonLogicOp!]: [] };
+        const jsonLogicOp = operation.jsonLogicOp || '';
+        if (!this.children || !this.children.length) return { [jsonLogicOp]: [] };
         
+        const childrenLogic = this.children ? this.children.map(child => child.jsonLogic) : [];
         return {
-          [operation.jsonLogicOp!]: this.children.map(child => child.jsonLogic)
+          [jsonLogicOp]: childrenLogic
         };
       }
     };
