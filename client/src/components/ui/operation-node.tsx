@@ -80,8 +80,11 @@ export default function OperationNode({
           return (
             <input 
               type="number" 
-              value={node.value ?? 0} 
-              onChange={(e) => onChange(node.id, e.target.value === '' ? 0 : Number(e.target.value))}
+              value={node.value === undefined || node.value === null ? '' : node.value} 
+              onChange={(e) => {
+                const value = e.target.value === '' ? null : Number(e.target.value);
+                onChange(node.id, value);
+              }}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             />
           );
