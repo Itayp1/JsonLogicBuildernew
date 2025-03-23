@@ -80,8 +80,8 @@ export default function OperationNode({
           return (
             <input 
               type="number" 
-              value={node.value as number} 
-              onChange={(e) => onChange(node.id, parseFloat(e.target.value))}
+              value={node.value !== undefined ? node.value : 0} 
+              onChange={(e) => onChange(node.id, e.target.value === '' ? 0 : parseFloat(e.target.value))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             />
           );
@@ -89,7 +89,7 @@ export default function OperationNode({
           return (
             <input 
               type="text" 
-              value={node.value as string} 
+              value={node.value !== undefined ? String(node.value) : ""} 
               onChange={(e) => onChange(node.id, e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             />
@@ -97,7 +97,7 @@ export default function OperationNode({
         case "boolean":
           return (
             <select 
-              value={String(node.value)} 
+              value={node.value !== undefined ? String(node.value) : "false"} 
               onChange={(e) => onChange(node.id, e.target.value === "true")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             >
