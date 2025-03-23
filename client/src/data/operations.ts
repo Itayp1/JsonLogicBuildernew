@@ -3,47 +3,38 @@ import { Operation } from "@/types/json-logic";
 export const logicalOperations: Operation[] = [
   {
     name: "and",
-    displayName: "and",
-    description: "All conditions must be true",
+    displayName: "AND",
+    description: "Logical AND operation",
     type: "logical",
-    icon: "fa-code-branch",
+    icon: "fa-code",
     jsonLogicOp: "and",
     acceptsMultipleArguments: true
   },
   {
     name: "or",
-    displayName: "or",
-    description: "Any condition must be true",
+    displayName: "OR", 
+    description: "Logical OR operation",
     type: "logical",
-    icon: "fa-code-branch fa-rotate-90",
+    icon: "fa-code",
     jsonLogicOp: "or",
     acceptsMultipleArguments: true
   },
   {
     name: "not",
-    displayName: "not",
-    description: "Negates the condition",
-    type: "logical",
-    icon: "fa-ban",
+    displayName: "NOT",
+    description: "Logical NOT operation",
+    type: "logical", 
+    icon: "fa-code",
     jsonLogicOp: "!",
     acceptsMultipleArguments: false
-  },
-  {
-    name: "if",
-    displayName: "if",
-    description: "Conditional expression",
-    type: "logical",
-    icon: "fa-question",
-    jsonLogicOp: "if",
-    acceptsMultipleArguments: true
   }
 ];
 
 export const comparisonOperations: Operation[] = [
   {
     name: "equal",
-    displayName: "==",
-    description: "Equal to",
+    displayName: "Equal (==)",
+    description: "Check if values are equal",
     type: "comparison",
     icon: "fa-equals",
     jsonLogicOp: "==",
@@ -51,8 +42,8 @@ export const comparisonOperations: Operation[] = [
   },
   {
     name: "strict_equal",
-    displayName: "===",
-    description: "Strictly equal to",
+    displayName: "Strict Equal (===)",
+    description: "Check if values are strictly equal",
     type: "comparison",
     icon: "fa-equals",
     jsonLogicOp: "===",
@@ -60,38 +51,20 @@ export const comparisonOperations: Operation[] = [
   },
   {
     name: "greater",
-    displayName: ">",
-    description: "Greater than",
+    displayName: "Greater Than (>)",
+    description: "Check if first value is greater",
     type: "comparison",
     icon: "fa-greater-than",
     jsonLogicOp: ">",
     acceptsMultipleArguments: false
   },
   {
-    name: "greater_equal",
-    displayName: ">=",
-    description: "Greater than or equal",
-    type: "comparison",
-    icon: "fa-greater-than-equal",
-    jsonLogicOp: ">=",
-    acceptsMultipleArguments: false
-  },
-  {
     name: "less",
-    displayName: "<",
-    description: "Less than",
+    displayName: "Less Than (<)",
+    description: "Check if first value is less",
     type: "comparison",
     icon: "fa-less-than",
     jsonLogicOp: "<",
-    acceptsMultipleArguments: false
-  },
-  {
-    name: "less_equal",
-    displayName: "<=",
-    description: "Less than or equal",
-    type: "comparison",
-    icon: "fa-less-than-equal",
-    jsonLogicOp: "<=",
     acceptsMultipleArguments: false
   }
 ];
@@ -99,8 +72,8 @@ export const comparisonOperations: Operation[] = [
 export const arithmeticOperations: Operation[] = [
   {
     name: "add",
-    displayName: "+",
-    description: "Addition",
+    displayName: "Add (+)",
+    description: "Add numbers together",
     type: "arithmetic",
     icon: "fa-plus",
     jsonLogicOp: "+",
@@ -108,17 +81,17 @@ export const arithmeticOperations: Operation[] = [
   },
   {
     name: "subtract",
-    displayName: "-",
-    description: "Subtraction",
+    displayName: "Subtract (-)",
+    description: "Subtract numbers",
     type: "arithmetic",
     icon: "fa-minus",
     jsonLogicOp: "-",
-    acceptsMultipleArguments: true
+    acceptsMultipleArguments: false
   },
   {
     name: "multiply",
-    displayName: "*",
-    description: "Multiplication",
+    displayName: "Multiply (*)",
+    description: "Multiply numbers together",
     type: "arithmetic",
     icon: "fa-times",
     jsonLogicOp: "*",
@@ -126,20 +99,11 @@ export const arithmeticOperations: Operation[] = [
   },
   {
     name: "divide",
-    displayName: "/",
-    description: "Division",
+    displayName: "Divide (/)",
+    description: "Divide numbers",
     type: "arithmetic",
     icon: "fa-divide",
     jsonLogicOp: "/",
-    acceptsMultipleArguments: true
-  },
-  {
-    name: "modulo",
-    displayName: "%",
-    description: "Modulo (remainder)",
-    type: "arithmetic",
-    icon: "fa-percentage",
-    jsonLogicOp: "%",
     acceptsMultipleArguments: false
   }
 ];
@@ -147,7 +111,7 @@ export const arithmeticOperations: Operation[] = [
 export const dataAccessOperations: Operation[] = [
   {
     name: "var",
-    displayName: "var",
+    displayName: "Variable",
     description: "Access variable value",
     type: "accessor",
     icon: "fa-database",
@@ -156,20 +120,11 @@ export const dataAccessOperations: Operation[] = [
   },
   {
     name: "missing",
-    displayName: "missing",
+    displayName: "Missing",
     description: "Check if variable is missing",
     type: "accessor",
     icon: "fa-question-circle",
     jsonLogicOp: "missing",
-    acceptsMultipleArguments: true
-  },
-  {
-    name: "missing_some",
-    displayName: "missing_some",
-    description: "Check if some variables are missing",
-    type: "accessor",
-    icon: "fa-list-check",
-    jsonLogicOp: "missing_some",
     acceptsMultipleArguments: true
   }
 ];
@@ -177,16 +132,16 @@ export const dataAccessOperations: Operation[] = [
 export const arrayOperations: Operation[] = [
   {
     name: "map",
-    displayName: "map",
-    description: "Transform array elements",
+    displayName: "Map",
+    description: "Map array elements",
     type: "array",
-    icon: "fa-map",
+    icon: "fa-list",
     jsonLogicOp: "map",
     acceptsMultipleArguments: false
   },
   {
     name: "filter",
-    displayName: "filter",
+    displayName: "Filter",
     description: "Filter array elements",
     type: "array",
     icon: "fa-filter",
@@ -195,62 +150,41 @@ export const arrayOperations: Operation[] = [
   },
   {
     name: "reduce",
-    displayName: "reduce",
+    displayName: "Reduce",
     description: "Reduce array to single value",
     type: "array",
     icon: "fa-compress",
     jsonLogicOp: "reduce",
-    acceptsMultipleArguments: false
-  },
-  {
-    name: "all",
-    displayName: "all",
-    description: "All elements match condition",
-    type: "array",
-    icon: "fa-check-double",
-    jsonLogicOp: "all",
-    acceptsMultipleArguments: false
-  },
-  {
-    name: "some",
-    displayName: "some",
-    description: "Some elements match condition",
-    type: "array",
-    icon: "fa-check",
-    jsonLogicOp: "some",
     acceptsMultipleArguments: false
   }
 ];
 
 export const literalOperations: Operation[] = [
   {
-    name: "literal-number",
+    name: "number",
     displayName: "Number",
-    description: "Numeric value",
+    description: "Number literal",
     type: "literal",
-    literalType: "number",
     icon: "fa-hashtag",
-    jsonLogicOp: null,
+    jsonLogicOp: "",
     acceptsMultipleArguments: false
   },
   {
-    name: "literal-string",
+    name: "string",
     displayName: "String",
-    description: "Text value",
+    description: "String literal",
     type: "literal",
-    literalType: "string",
-    icon: "fa-quote-right",
-    jsonLogicOp: null,
+    icon: "fa-font",
+    jsonLogicOp: "",
     acceptsMultipleArguments: false
   },
   {
-    name: "literal-boolean",
+    name: "boolean",
     displayName: "Boolean",
-    description: "True or false",
+    description: "Boolean literal",
     type: "literal",
-    literalType: "boolean",
     icon: "fa-toggle-on",
-    jsonLogicOp: null,
+    jsonLogicOp: "",
     acceptsMultipleArguments: false
   }
 ];
