@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { JsonLogicNode } from "@/types/json-logic";
 import JsonSyntaxHighlighter from "@/components/ui/json-syntax-highlighter";
+import { buildJsonLogic } from "@/lib/json-logic-utils";
 
 interface PreviewPanelProps {
   jsonLogic: JsonLogicNode | null;
@@ -19,10 +20,15 @@ export default function PreviewPanel({
 }: PreviewPanelProps) {
   const [activeTab, setActiveTab] = useState<'json' | 'test'>('json');
   
+  // Get the actual JSON Logic representation using buildJsonLogic helper
+  const jsonLogicRepresentation = useMemo(() => {
+    return buildJsonLogic(jsonLogic);
+  }, [jsonLogic]);
+  
   const handleCopyJson = () => {
-    if (!jsonLogic) return;
+    if (!jsonLogicRepresentation) return;
     
-    const jsonString = JSON.stringify(jsonLogic.jsonLogic, null, 2);
+    const jsonString = JSON.stringify(jsonLogicRepresentation, null, 2);
     navigator.clipboard.writeText(jsonString);
   };
 
@@ -65,8 +71,8 @@ export default function PreviewPanel({
           </div>
           
           <div className="flex-1 overflow-auto p-4 bg-gray-50 font-mono text-sm">
-            {jsonLogic ? (
-              <JsonSyntaxHighlighter json={jsonLogic.jsonLogic} />
+            {jsonLogicRepresentation ? (
+              <JsonSyntaxHighlighter json={jsonLogicRepresentation} />
             ) : (
               <div className="text-gray-400 italic">
                 No JSON Logic expression created yet.
@@ -101,7 +107,7 @@ export default function PreviewPanel({
             <button 
               className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
               onClick={onRunTest}
-              disabled={!jsonLogic}
+              disabled={!jsonLogicRepresentation}
             >
               Run Test
             </button>

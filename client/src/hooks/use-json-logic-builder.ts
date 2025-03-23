@@ -234,7 +234,14 @@ export function useJsonLogicBuilder() {
   const exportJson = useCallback(() => {
     if (!expression) return;
     
-    const json = JSON.stringify(expression.jsonLogic, null, 2);
+    // Use buildJsonLogic to get proper JSON Logic object
+    const jsonLogicObj = buildJsonLogic(expression);
+    if (!jsonLogicObj) {
+      alert('Invalid JSON Logic expression');
+      return;
+    }
+    
+    const json = JSON.stringify(jsonLogicObj, null, 2);
     
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -294,7 +301,14 @@ export function useJsonLogicBuilder() {
         return;
       }
       
-      const result = jsonLogic.apply(expression.jsonLogic, testDataObj);
+      // Use buildJsonLogic to get proper JSON Logic object
+      const jsonLogicObj = buildJsonLogic(expression);
+      if (!jsonLogicObj) {
+        alert('Invalid JSON Logic expression');
+        return;
+      }
+      
+      const result = jsonLogic.apply(jsonLogicObj, testDataObj);
       setTestResult(result);
     } catch (error) {
       console.error('Error evaluating expression:', error);
