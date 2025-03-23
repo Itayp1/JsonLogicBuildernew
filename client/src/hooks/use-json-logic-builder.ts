@@ -47,10 +47,7 @@ export function useJsonLogicBuilder() {
         name: operation.name,
         displayName: operation.displayName,
         icon: operation.icon,
-        value: defaultValue,
-        get jsonLogic() {
-          return this.value;
-        }
+        value: defaultValue
       };
     }
     
@@ -61,10 +58,7 @@ export function useJsonLogicBuilder() {
         name: operation.name,
         displayName: operation.displayName,
         icon: operation.icon,
-        path: '',
-        get jsonLogic() {
-          return { [operation.jsonLogicOp!]: this.path };
-        }
+        path: ''
       };
     }
     
@@ -76,25 +70,7 @@ export function useJsonLogicBuilder() {
         name: operation.name,
         displayName: operation.displayName,
         icon: operation.icon,
-        children: [],
-        get jsonLogic() {
-          const jsonLogicOp = operation.jsonLogicOp || '';
-          // Ensure we have two arguments for comparison operations
-          if (!this.children || !this.children.length) return { [jsonLogicOp]: [] };
-          
-          // If we have just one argument, add a default second argument (0)
-          if (this.children.length === 1 && this.children[0]) {
-            return {
-              [jsonLogicOp]: [this.children[0].jsonLogic, 0]
-            };
-          }
-          
-          // Normal case with two or more arguments
-          const childrenArgs = this.children.slice(0, 2).map(child => child.jsonLogic);
-          return {
-            [jsonLogicOp]: childrenArgs
-          };
-        }
+        children: []
       };
     }
     
@@ -105,16 +81,7 @@ export function useJsonLogicBuilder() {
       name: operation.name,
       displayName: operation.displayName,
       icon: operation.icon,
-      children: [],
-      get jsonLogic() {
-        const jsonLogicOp = operation.jsonLogicOp || '';
-        if (!this.children || !this.children.length) return { [jsonLogicOp]: [] };
-        
-        const childrenLogic = this.children ? this.children.map(child => child.jsonLogic) : [];
-        return {
-          [jsonLogicOp]: childrenLogic
-        };
-      }
+      children: []
     };
   }, []);
 

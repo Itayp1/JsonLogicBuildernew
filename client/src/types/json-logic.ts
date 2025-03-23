@@ -25,9 +25,6 @@ export interface JsonLogicNode {
   
   // For operation types
   children?: JsonLogicNode[];
-  
-  // For JSON Logic conversion
-  jsonLogic: any;
 }
 
 export interface DragItem {

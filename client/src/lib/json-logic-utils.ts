@@ -5,7 +5,33 @@ import { getOperationByName, allOperations } from '@/data/operations';
 export function buildJsonLogic(node: JsonLogicNode | null): any {
   if (!node) return null;
   
-  return node.jsonLogic;
+  // Handle literals
+  if (node.type === 'literal') {
+    return node.value;
+  }
+  
+  // Handle var accessor
+  if (node.type === 'accessor' && node.name === 'var') {
+    return { "var": node.path || "" };
+  }
+  
+  // Handle operations with children
+  const operationName = getOperationByName(node.name)?.jsonLogicOp;
+  if (!operationName) return null;
+  
+  // Special handling for comparison operations
+  if (node.type === 'comparison') {
+    const childLogic = (node.children || []).slice(0, 2).map(child => buildJsonLogic(child));
+    // If we have only one child, add a default second argument
+    if (childLogic.length === 1) {
+      childLogic.push(0);
+    }
+    return { [operationName]: childLogic };
+  }
+  
+  // For all other operations
+  const childrenLogic = (node.children || []).map(child => buildJsonLogic(child));
+  return { [operationName]: childrenLogic };
 }
 
 export function parseJsonLogic(logic: any): JsonLogicNode | null {
@@ -44,10 +70,7 @@ export function parseJsonLogic(logic: any): JsonLogicNode | null {
       displayName,
       icon,
       literalType,
-      value: logic,
-      get jsonLogic() {
-        return this.value;
-      }
+      value: logic
     };
   }
   
@@ -78,10 +101,7 @@ export function parseJsonLogic(logic: any): JsonLogicNode | null {
       name: 'var',
       displayName: 'var',
       icon: 'fa-database',
-      path: typeof args === 'string' ? args : '',
-      get jsonLogic() {
-        return { var: this.path };
-      }
+      path: typeof args === 'string' ? args : ''
     };
   }
   
@@ -98,18 +118,7 @@ export function parseJsonLogic(logic: any): JsonLogicNode | null {
       name: operationDef.name,
       displayName: operationDef.displayName,
       icon: operationDef.icon,
-      children,
-      get jsonLogic() {
-        // For comparison operations, we only use the first two children
-        const childLogic = children.slice(0, 2).map(child => child.jsonLogic);
-        // If we have only one child, add a default second argument
-        if (childLogic.length === 1) {
-          childLogic.push(0);
-        }
-        return {
-          [operator]: childLogic
-        };
-      }
+      children
     };
   }
   
@@ -120,11 +129,6 @@ export function parseJsonLogic(logic: any): JsonLogicNode | null {
     name: operationDef.name,
     displayName: operationDef.displayName,
     icon: operationDef.icon,
-    children,
-    get jsonLogic() {
-      return {
-        [operator]: children.map(child => child.jsonLogic)
-      };
-    }
+    children
   };
 }
