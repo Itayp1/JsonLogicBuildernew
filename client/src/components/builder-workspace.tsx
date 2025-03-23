@@ -1,7 +1,17 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useDrop } from "react-dnd";
 import { Operation, JsonLogicNode } from "@/types/json-logic";
 import OperationNode from "@/components/ui/operation-node";
+import { 
+  Box, 
+  Typography, 
+  Button, 
+  Stack,
+  Divider 
+} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import UndoIcon from '@mui/icons-material/Undo';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 
 interface BuilderWorkspaceProps {
   expression: JsonLogicNode | null;
@@ -44,39 +54,62 @@ export default function BuilderWorkspace({
   };
 
   return (
-    <div className="flex-1 flex flex-col">
-      <div className="p-4 border-b border-gray-200 bg-white flex items-center justify-between">
-        <h2 className="font-medium text-gray-700">Builder Workspace</h2>
-        <div className="flex space-x-2">
-          <button 
-            className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 transition-colors"
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="subtitle1" fontWeight={500}>
+          Builder Workspace
+        </Typography>
+        <Stack direction="row" spacing={1}>
+          <Button 
+            variant="outlined" 
+            size="small" 
+            color="error" 
+            startIcon={<DeleteIcon />}
             onClick={onClear}
           >
-            <i className="fas fa-trash-alt mr-1"></i> Clear
-          </button>
-          <button 
-            className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 transition-colors"
+            Clear
+          </Button>
+          <Button 
+            variant="outlined" 
+            size="small" 
+            color="primary" 
+            startIcon={<UndoIcon />}
             onClick={onUndo}
           >
-            <i className="fas fa-undo mr-1"></i> Undo
-          </button>
-        </div>
-      </div>
+            Undo
+          </Button>
+        </Stack>
+      </Box>
       
-      <div 
+      <Divider />
+      
+      <Box 
         ref={drop} 
-        className={`flex-1 overflow-auto p-6 bg-gray-50 ${isOver ? 'bg-blue-50' : ''}`}
+        sx={{ 
+          flexGrow: 1, 
+          overflow: 'auto', 
+          p: 3,
+          bgcolor: isOver ? 'primary.50' : 'background.default',
+          transition: 'background-color 0.2s'
+        }}
       >
         {!expression ? (
-          <div className="h-full flex flex-col items-center justify-center text-gray-400">
-            <div className="text-6xl mb-4">
-              <i className="fas fa-code-branch"></i>
-            </div>
-            <h3 className="text-xl font-medium mb-2">Start Building Your Logic</h3>
-            <p className="text-center max-w-md mb-6">
+          <Box sx={{ 
+            height: '100%', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            color: 'text.disabled'
+          }}>
+            <AccountTreeIcon sx={{ fontSize: 64, mb: 2 }} />
+            <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+              Start Building Your Logic
+            </Typography>
+            <Typography variant="body2" textAlign="center" sx={{ maxWidth: 400, mb: 3 }}>
               Drag operations from the sidebar and drop them here to build your JSON Logic expression.
-            </p>
-          </div>
+            </Typography>
+          </Box>
         ) : (
           <OperationNode 
             node={expression}
@@ -87,7 +120,7 @@ export default function BuilderWorkspace({
             activeDropZone={activeDropZone}
           />
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

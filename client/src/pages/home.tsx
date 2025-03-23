@@ -9,7 +9,7 @@ import {
   Toolbar, 
   Typography, 
   Box, 
-  Container,
+  Paper,
   CssBaseline
 } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
@@ -39,12 +39,12 @@ export default function Home() {
       display: 'flex', 
       flexDirection: 'column', 
       height: '100vh',
-      backgroundColor: 'background.default'
+      bgcolor: 'background.default'
     }}>
       <CssBaseline />
       
       {/* Header */}
-      <AppBar position="static" color="primary" elevation={2}>
+      <AppBar position="static" elevation={0} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <CodeIcon sx={{ mr: 1 }} />
@@ -68,30 +68,61 @@ export default function Home() {
         display: 'flex', 
         flexGrow: 1, 
         overflow: 'hidden',
-        bgcolor: 'background.default'
+        p: 2,
+        gap: 2
       }}>
-        <OperationsSidebar 
-          onDragStart={handleDragStart} 
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-        />
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            width: 280, 
+            overflow: 'auto',
+            border: 1,
+            borderColor: 'divider'
+          }}
+        >
+          <OperationsSidebar 
+            onDragStart={handleDragStart} 
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+          />
+        </Paper>
         
-        <BuilderWorkspace 
-          expression={expression} 
-          onDrop={handleDrop} 
-          onChange={handleOperationChange}
-          onRemove={handleRemoveOperation}
-          onClear={clearWorkspace}
-          onUndo={undo}
-        />
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            flexGrow: 1, 
+            overflow: 'auto',
+            border: 1,
+            borderColor: 'divider'
+          }}
+        >
+          <BuilderWorkspace 
+            expression={expression} 
+            onDrop={handleDrop} 
+            onChange={handleOperationChange}
+            onRemove={handleRemoveOperation}
+            onClear={clearWorkspace}
+            onUndo={undo}
+          />
+        </Paper>
         
-        <PreviewPanel 
-          jsonLogic={expression} 
-          testData={testData}
-          onTestDataChange={setTestData}
-          testResult={testResult}
-          onRunTest={testExpression}
-        />
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            width: 340, 
+            overflow: 'auto',
+            border: 1,
+            borderColor: 'divider'
+          }}
+        >
+          <PreviewPanel 
+            jsonLogic={expression} 
+            testData={testData}
+            onTestDataChange={setTestData}
+            testResult={testResult}
+            onRunTest={testExpression}
+          />
+        </Paper>
       </Box>
     </Box>
   );

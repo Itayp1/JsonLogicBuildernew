@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useDrag } from "react-dnd";
 import { 
   logicalOperations, 
@@ -9,6 +8,41 @@ import {
   literalOperations 
 } from "@/data/operations";
 import { Operation } from "@/types/json-logic";
+import { 
+  Box, 
+  Typography, 
+  TextField, 
+  InputAdornment,
+  Paper,
+  Divider
+} from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
+import CodeIcon from '@mui/icons-material/Code';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import StorageIcon from '@mui/icons-material/Storage';
+import ListIcon from '@mui/icons-material/List';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
+
+// Map operation types to icons
+const typeToIcon = {
+  logical: <CodeIcon />,
+  comparison: <CompareArrowsIcon />,
+  arithmetic: <CalculateIcon />,
+  accessor: <StorageIcon />,
+  array: <ListIcon />,
+  literal: <TextFieldsIcon />
+};
+
+// Map operation types to colors
+const typeToColor = {
+  logical: "#2196f3",     // blue
+  comparison: "#9c27b0",  // purple
+  arithmetic: "#e91e63",  // pink
+  accessor: "#4caf50",    // green
+  array: "#ff9800",       // amber
+  literal: "#757575"      // gray
+};
 
 interface OperationItemProps {
   operation: Operation;
@@ -28,50 +62,58 @@ function OperationItem({ operation, onDragStart }: OperationItemProps) {
   }));
 
   const getBorderColor = () => {
-    switch (operation.type) {
-      case "logical": return "border-json-logic-logical";
-      case "comparison": return "border-json-logic-comparison";
-      case "arithmetic": return "border-json-logic-arithmetic";
-      case "array": return "border-json-logic-array";
-      case "accessor": return "border-json-logic-accessor";
-      case "literal": return "border-json-logic-literal";
-      default: return "border-gray-300";
-    }
-  };
-
-  const getBgColor = () => {
-    switch (operation.type) {
-      case "logical": return "bg-blue-100 text-json-logic-logical";
-      case "comparison": return "bg-purple-100 text-json-logic-comparison";
-      case "arithmetic": return "bg-pink-100 text-json-logic-arithmetic";
-      case "array": return "bg-amber-100 text-json-logic-array";
-      case "accessor": return "bg-emerald-100 text-json-logic-accessor";
-      case "literal": return "bg-gray-100 text-json-logic-literal";
-      default: return "bg-gray-100 text-gray-600";
-    }
+    return typeToColor[operation.type as keyof typeof typeToColor] || "#e0e0e0";
   };
 
   const getIcon = () => {
-    return operation.icon || "fa-code";
+    return typeToIcon[operation.type as keyof typeof typeToIcon] || <CodeIcon />;
   };
 
   return (
-    <div 
+    <Paper
       ref={drag}
-      className={`p-2 bg-white border-l-4 ${getBorderColor()} rounded shadow-sm drag-handle ${isDragging ? 'opacity-50' : ''}`}
+      elevation={1}
+      sx={{
+        p: 1.5,
+        mb: 1,
+        borderLeft: 3,
+        borderColor: getBorderColor(),
+        borderRadius: 1,
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'grab',
+        '&:hover': {
+          boxShadow: 2
+        }
+      }}
       data-operation={operation.name}
       data-type={operation.type}
     >
-      <div className="flex items-center">
-        <div className={`${getBgColor()} w-8 h-8 rounded flex items-center justify-center mr-2`}>
-          <i className={`fas ${getIcon()}`}></i>
-        </div>
-        <div>
-          <div className="font-medium">{operation.displayName}</div>
-          <div className="text-xs text-gray-500">{operation.description}</div>
-        </div>
-      </div>
-    </div>
+      <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+        <Box 
+          sx={{ 
+            width: 32, 
+            height: 32, 
+            borderRadius: 1, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            backgroundColor: `${getBorderColor()}20`,
+            color: getBorderColor(),
+            mr: 1.5
+          }}
+        >
+          {getIcon()}
+        </Box>
+        <Box>
+          <Typography variant="body2" fontWeight={500}>
+            {operation.displayName}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {operation.description}
+          </Typography>
+        </Box>
+      </Box>
+    </Paper>
   );
 }
 
@@ -93,9 +135,22 @@ function OperationGroup({ title, operations, searchTerm, onDragStart }: Operatio
   }
 
   return (
-    <div className="mb-4">
-      <h3 className="px-2 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">{title}</h3>
-      <div className="space-y-2 mt-1">
+    <Box sx={{ mb: 2 }}>
+      <Typography 
+        variant="caption" 
+        sx={{ 
+          px: 1, 
+          py: 0.5, 
+          fontWeight: 600,
+          color: 'text.secondary', 
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          display: 'block'
+        }}
+      >
+        {title}
+      </Typography>
+      <Box sx={{ mt: 1 }}>
         {filteredOperations.map((operation) => (
           <OperationItem 
             key={operation.name} 
@@ -103,8 +158,8 @@ function OperationGroup({ title, operations, searchTerm, onDragStart }: Operatio
             onDragStart={onDragStart} 
           />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
@@ -120,22 +175,31 @@ export default function OperationsSidebar({
   onSearchChange 
 }: OperationsSidebarProps) {
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-      <div className="p-4 border-b border-gray-200">
-        <h2 className="font-medium text-gray-700">Operations</h2>
-        <div className="mt-2 relative">
-          <input 
-            type="text" 
-            placeholder="Search operations..." 
-            className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md text-sm"
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-          />
-          <i className="fas fa-search text-gray-400 absolute left-3 top-3"></i>
-        </div>
-      </div>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Box sx={{ p: 2 }}>
+        <Typography variant="subtitle1" fontWeight={500} sx={{ mb: 1 }}>
+          Operations
+        </Typography>
+        <TextField
+          fullWidth
+          size="small"
+          placeholder="Search operations..."
+          value={searchTerm}
+          onChange={(e) => onSearchChange(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" color="action" />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ mb: 1 }}
+        />
+      </Box>
       
-      <div className="overflow-y-auto flex-1 p-2">
+      <Divider />
+      
+      <Box sx={{ p: 2, overflow: 'auto', flexGrow: 1 }}>
         <OperationGroup 
           title="Logical" 
           operations={logicalOperations} 
@@ -172,7 +236,7 @@ export default function OperationsSidebar({
           searchTerm={searchTerm}
           onDragStart={onDragStart} 
         />
-      </div>
-    </aside>
+      </Box>
+    </Box>
   );
 }

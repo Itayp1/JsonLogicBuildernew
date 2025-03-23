@@ -1,3 +1,8 @@
+import { Button, Stack } from "@mui/material";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import AddIcon from '@mui/icons-material/Add';
+
 interface HeaderActionsProps {
   onImport: () => void;
   onExport: () => void;
@@ -6,25 +11,36 @@ interface HeaderActionsProps {
 
 export default function HeaderActions({ onImport, onExport, onNewExpression }: HeaderActionsProps) {
   return (
-    <div className="flex space-x-2">
-      <button 
-        className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 transition-colors"
+    <Stack direction="row" spacing={1}>
+      <Button 
+        variant="outlined" 
+        size="small" 
+        color="inherit" 
         onClick={onImport}
+        startIcon={<CloudUploadIcon />}
+        sx={{ borderColor: 'rgba(255,255,255,0.5)' }}
       >
-        <i className="fas fa-upload mr-1"></i> Import
-      </button>
-      <button 
-        className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 transition-colors"
+        Import
+      </Button>
+      <Button 
+        variant="outlined" 
+        size="small" 
+        color="inherit" 
         onClick={onExport}
+        startIcon={<CloudDownloadIcon />}
+        sx={{ borderColor: 'rgba(255,255,255,0.5)' }}
       >
-        <i className="fas fa-download mr-1"></i> Export
-      </button>
-      <button 
-        className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition-colors"
+        Export
+      </Button>
+      <Button 
+        variant="contained" 
+        size="small" 
+        color="secondary" 
         onClick={onNewExpression}
+        startIcon={<AddIcon />}
       >
-        <i className="fas fa-plus mr-1"></i> New Expression
-      </button>
-    </div>
+        New Expression
+      </Button>
+    </Stack>
   );
 }

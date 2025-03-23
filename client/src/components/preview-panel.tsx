@@ -2,6 +2,19 @@ import { useState, useMemo } from "react";
 import { JsonLogicNode } from "@/types/json-logic";
 import JsonSyntaxHighlighter from "@/components/ui/json-syntax-highlighter";
 import { buildJsonLogic } from "@/lib/json-logic-utils";
+import { 
+  Box, 
+  Typography, 
+  Button, 
+  Tabs, 
+  Tab, 
+  TextField, 
+  Paper,
+  Divider,
+  IconButton 
+} from "@mui/material";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 interface PreviewPanelProps {
   jsonLogic: JsonLogicNode | null;
@@ -32,106 +45,161 @@ export default function PreviewPanel({
     navigator.clipboard.writeText(jsonString);
   };
 
+  const handleTabChange = (_: React.SyntheticEvent, newValue: 'json' | 'test') => {
+    setActiveTab(newValue);
+  };
+
+  const getResultColor = () => {
+    if (testResult === true) return 'success.main';
+    if (testResult === false) return 'error.main';
+    if (typeof testResult === 'number') return 'primary.main';
+    if (typeof testResult === 'string') return 'secondary.main';
+    return 'text.secondary';
+  };
+
   return (
-    <aside className="w-96 bg-white border-l border-gray-200 flex flex-col">
-      <div className="flex border-b border-gray-200">
-        <button 
-          className={`flex-1 py-3 px-4 text-center font-medium focus:outline-none focus:bg-gray-50 ${
-            activeTab === 'json' 
-              ? 'bg-gray-50 border-b-2 border-blue-500' 
-              : 'text-gray-500 hover:bg-gray-50'
-          }`}
-          onClick={() => setActiveTab('json')}
-        >
-          JSON Logic
-        </button>
-        <button 
-          className={`flex-1 py-3 px-4 text-center font-medium focus:outline-none focus:bg-gray-50 ${
-            activeTab === 'test' 
-              ? 'bg-gray-50 border-b-2 border-blue-500' 
-              : 'text-gray-500 hover:bg-gray-50'
-          }`}
-          onClick={() => setActiveTab('test')}
-        >
-          Test Data
-        </button>
-      </div>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Tabs 
+        value={activeTab} 
+        onChange={handleTabChange}
+        variant="fullWidth"
+        textColor="primary"
+        indicatorColor="primary"
+      >
+        <Tab value="json" label="JSON Logic" />
+        <Tab value="test" label="Test Data" />
+      </Tabs>
+      
+      <Divider />
       
       {activeTab === 'json' ? (
-        <div className="flex-1 flex flex-col">
-          <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-            <h3 className="font-medium text-gray-700">Preview</h3>
-            <button 
-              className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded"
+        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+          <Box sx={{ 
+            p: 2, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between' 
+          }}>
+            <Typography variant="subtitle2">Preview</Typography>
+            <IconButton 
+              size="small"
               onClick={handleCopyJson}
               disabled={!jsonLogic}
+              title="Copy JSON"
             >
-              <i className="far fa-copy mr-1"></i> Copy
-            </button>
-          </div>
+              <ContentCopyIcon fontSize="small" />
+            </IconButton>
+          </Box>
           
-          <div className="flex-1 overflow-auto p-4 bg-gray-50 font-mono text-sm">
+          <Divider />
+          
+          <Box sx={{ 
+            flexGrow: 1, 
+            overflow: 'auto', 
+            p: 2, 
+            bgcolor: 'background.default',
+            fontFamily: '"Roboto Mono", monospace',
+            fontSize: '0.875rem'
+          }}>
             {jsonLogicRepresentation ? (
               <JsonSyntaxHighlighter json={jsonLogicRepresentation} />
             ) : (
-              <div className="text-gray-400 italic">
+              <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.disabled' }}>
                 No JSON Logic expression created yet.
-              </div>
+              </Typography>
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
       ) : (
-        <div className="flex-1 flex flex-col">
-          <div className="p-4 border-b border-gray-200">
-            <h3 className="font-medium text-gray-700 mb-2">Test Data</h3>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-gray-500">{"{"}</span>
-              </div>
-              <textarea 
-                className="w-full pl-6 pr-6 py-2 border border-gray-300 rounded-md font-mono text-sm"
+        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+          <Box sx={{ p: 2 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              Test Data
+            </Typography>
+            <Box sx={{ position: 'relative' }}>
+              <TextField
+                fullWidth
+                multiline
                 rows={5}
+                variant="outlined"
                 value={testData}
                 onChange={(e) => onTestDataChange(e.target.value)}
-                placeholder='"age": 25,
-"name": "John",
-"active": true'
+                placeholder={'"age": 25,\n"name": "John",\n"active": true'}
+                InputProps={{
+                  sx: { 
+                    fontFamily: '"Roboto Mono", monospace', 
+                    fontSize: '0.875rem',
+                    pl: 3,
+                    pr: 3
+                  }
+                }}
               />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500">{"}"}</span>
-              </div>
-            </div>
-          </div>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  position: 'absolute', 
+                  top: 10, 
+                  left: 12, 
+                  color: 'text.disabled'
+                }}
+              >
+                {"{"}
+              </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  position: 'absolute', 
+                  bottom: 10, 
+                  right: 12, 
+                  color: 'text.disabled'
+                }}
+              >
+                {"}"}
+              </Typography>
+            </Box>
+          </Box>
           
-          <div className="p-4 border-b border-gray-200">
-            <button 
-              className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+          <Box sx={{ p: 2 }}>
+            <Button 
+              fullWidth
+              variant="contained" 
+              color="primary" 
               onClick={onRunTest}
               disabled={!jsonLogicRepresentation}
+              startIcon={<PlayArrowIcon />}
             >
               Run Test
-            </button>
-          </div>
+            </Button>
+          </Box>
           
-          <div className="p-4 border-b border-gray-200">
-            <h3 className="font-medium text-gray-700 mb-2">Result</h3>
-            <div className="p-3 bg-gray-50 border border-gray-200 rounded-md font-mono text-sm">
+          <Box sx={{ p: 2 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              Result
+            </Typography>
+            <Paper 
+              variant="outlined" 
+              sx={{ 
+                p: 2, 
+                bgcolor: 'background.default', 
+                fontFamily: '"Roboto Mono", monospace',
+                fontSize: '0.875rem',
+                color: getResultColor()
+              }}
+            >
               {testResult !== undefined ? (
-                <span className={testResult === true ? "text-green-600" : 
-                                testResult === false ? "text-red-600" : 
-                                typeof testResult === "number" ? "text-blue-600" : 
-                                typeof testResult === "string" ? "text-purple-600" : ""}>
-                  {JSON.stringify(testResult, null, 2)}
-                </span>
+                JSON.stringify(testResult, null, 2)
               ) : (
-                <span className="text-gray-400 italic">
+                <Typography 
+                  variant="body2" 
+                  sx={{ fontStyle: 'italic', color: 'text.disabled' }}
+                >
                   Run the test to see the result
-                </span>
+                </Typography>
               )}
-            </div>
-          </div>
-        </div>
+            </Paper>
+          </Box>
+        </Box>
       )}
-    </aside>
+    </Box>
   );
 }

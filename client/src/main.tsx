@@ -14,8 +14,21 @@ const theme = createTheme({
     secondary: {
       main: '#9c27b0',
     },
+    success: {
+      main: '#2e7d32',
+    },
+    error: {
+      main: '#d32f2f',
+    },
+    warning: {
+      main: '#ed6c02',
+    },
+    info: {
+      main: '#0288d1',
+    },
     background: {
       default: '#f5f5f5',
+      paper: '#ffffff',
     },
   },
   typography: {
@@ -29,14 +42,21 @@ const theme = createTheme({
         },
       },
     },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+        },
+      },
+    },
   },
 });
 
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <DndProvider backend={HTML5Backend}>
+  <DndProvider backend={HTML5Backend}>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
-    </DndProvider>
-  </ThemeProvider>
+    </ThemeProvider>
+  </DndProvider>
 );
