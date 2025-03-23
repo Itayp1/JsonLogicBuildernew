@@ -90,6 +90,30 @@ export function parseJsonLogic(logic: any): JsonLogicNode | null {
   
   const children = argsArray.map(arg => parseJsonLogic(arg)).filter(Boolean) as JsonLogicNode[];
   
+  // Special handling for comparison operations
+  if (operationDef.type === 'comparison') {
+    return {
+      id,
+      type: operationDef.type,
+      name: operationDef.name,
+      displayName: operationDef.displayName,
+      icon: operationDef.icon,
+      children,
+      get jsonLogic() {
+        // For comparison operations, we only use the first two children
+        const childLogic = children.slice(0, 2).map(child => child.jsonLogic);
+        // If we have only one child, add a default second argument
+        if (childLogic.length === 1) {
+          childLogic.push(0);
+        }
+        return {
+          [operator]: childLogic
+        };
+      }
+    };
+  }
+  
+  // For all other operations
   return {
     id,
     type: operationDef.type,

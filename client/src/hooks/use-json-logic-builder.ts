@@ -68,6 +68,37 @@ export function useJsonLogicBuilder() {
       };
     }
     
+    // Special handling for comparison operations - they need exactly 2 arguments
+    if (operation.type === 'comparison') {
+      return {
+        id,
+        type: operation.type,
+        name: operation.name,
+        displayName: operation.displayName,
+        icon: operation.icon,
+        children: [],
+        get jsonLogic() {
+          const jsonLogicOp = operation.jsonLogicOp || '';
+          // Ensure we have two arguments for comparison operations
+          if (!this.children || !this.children.length) return { [jsonLogicOp]: [] };
+          
+          // If we have just one argument, add a default second argument (0)
+          if (this.children.length === 1 && this.children[0]) {
+            return {
+              [jsonLogicOp]: [this.children[0].jsonLogic, 0]
+            };
+          }
+          
+          // Normal case with two or more arguments
+          const childrenArgs = this.children.slice(0, 2).map(child => child.jsonLogic);
+          return {
+            [jsonLogicOp]: childrenArgs
+          };
+        }
+      };
+    }
+    
+    // For all other operations
     return {
       id,
       type: operation.type,

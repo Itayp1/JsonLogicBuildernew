@@ -118,6 +118,71 @@ export default function OperationNode({
           placeholder="Property path (e.g. user.name)"
         />
       );
+    } else if (node.type === "comparison") {
+      // Special handling for comparison operations
+      return (
+        <div className="space-y-3">
+          {/* Left-side comparison value */}
+          <div className="comparison-value">
+            <h3 className="text-sm font-medium text-gray-700 mb-1">Left-side value:</h3>
+            <div className="flex space-x-3">
+              <div className="flex-1">
+                {node.children && node.children[0] ? (
+                  <OperationNode 
+                    key={node.children[0].id} 
+                    node={node.children[0]} 
+                    onRemove={onRemove} 
+                    onChange={onChange}
+                    onDrop={onDrop}
+                    onDropZoneActive={onDropZoneActive}
+                    activeDropZone={activeDropZone}
+                    parentId={node.id}
+                    index={0}
+                  />
+                ) : (
+                  <DropZone 
+                    parentId={node.id}
+                    index={0}
+                    onDrop={onDrop}
+                    onDropZoneActive={onDropZoneActive}
+                    isActive={activeDropZone === `${node.id}-0`}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Right-side comparison value */}
+          <div className="comparison-value">
+            <h3 className="text-sm font-medium text-gray-700 mb-1">Right-side value:</h3>
+            <div className="flex space-x-3">
+              <div className="flex-1">
+                {node.children && node.children[1] ? (
+                  <OperationNode 
+                    key={node.children[1].id} 
+                    node={node.children[1]} 
+                    onRemove={onRemove} 
+                    onChange={onChange}
+                    onDrop={onDrop}
+                    onDropZoneActive={onDropZoneActive}
+                    activeDropZone={activeDropZone}
+                    parentId={node.id}
+                    index={1}
+                  />
+                ) : (
+                  <DropZone 
+                    parentId={node.id}
+                    index={1}
+                    onDrop={onDrop}
+                    onDropZoneActive={onDropZoneActive}
+                    isActive={activeDropZone === `${node.id}-1`}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
     } else if (node.children && node.children.length > 0) {
       return (
         <div className="space-y-3">
